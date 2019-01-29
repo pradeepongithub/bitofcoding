@@ -1,6 +1,8 @@
 package com.codify.lemda;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -29,6 +31,15 @@ public static void main(String[] args) {
 
     findPairWithGivenSum(6, arr);
     findAllPairsForGivenSum(6, arr);
+
+    int[] A = {3, 4, -7, 1, 3, 3, 1, -4};
+    int sum = 7;
+
+    printallSubarrays(A, sum);
+
+    printAllSubArrayForGivenSum(36, arr);
+
+
 
 }
 
@@ -145,6 +156,87 @@ public static void main(String[] args) {
     }
 
     System.out.println("Pair for a given sum are : " + strBuilder);
+
+  }
+
+  // Utility function to insert <key, value> pair into the Multimap
+  private static <K, V> void insert(Map<K, List<V>> hashMap, K key, V value) {
+    // if the key is seen for the first time, initialize the list
+    if (!hashMap.containsKey(key)) {
+      hashMap.put(key, new ArrayList<>());
+    }
+
+    hashMap.get(key).add(value);
+  }
+
+  // Utility function to print a subarray A[i, j]
+  public static void printSubarray(int[] A, int i, int j) {
+    System.out.print("[" + i + ".." + j + "] -- { ");
+    for (int k = i; k <= j; k++) {
+      System.out.print(A[k] + " ");
+    }
+
+    System.out.println("}");
+  }
+
+  // Function to find subarrays with given sum in an array
+  public static void printallSubarrays(int[] A, int sum) {
+    // create a map for storing end index of all subarrays with
+    // sum of elements so far
+    Map<Integer, List<Integer>> hashMap = new HashMap<>();
+
+    // To handle the case when the subarray with given sum starts
+    // from 0th index
+    insert(hashMap, 0, -1);
+
+    int sum_so_far = 0;
+
+    // traverse the given array
+    for (int index = 0; index < A.length; index++) {
+      // sum of elements so far
+      sum_so_far += A[index];
+
+      // check if there exists at-least one sub-array with given sum
+      if (hashMap.containsKey(sum_so_far - sum)) {
+        List<Integer> list = hashMap.get(sum_so_far - sum);
+        for (Integer value : list) {
+          printSubarray(A, value + 1, index);
+        }
+      }
+
+      // insert (sum so far, current index) pair into the map
+      insert(hashMap, sum_so_far, index);
+    }
+  }
+
+  private static void printAllSubArrayForGivenSum(int sum, int... arr) {
+
+    int[] arr1 = new int[arr.length];
+    for (int i = 0; i < arr.length; i++) {
+      arr1[i] = arr[i] * arr[i];
+    }
+
+    Map<Integer, List<Integer>> hashMap = new HashMap<>();
+
+    insert(hashMap, 0, -1);
+
+    int sum_so_far = 0;
+
+    for (int index = 0; index < arr1.length; index++) {
+      // sum of elements so far
+      sum_so_far += arr[index];
+
+      // check if there exists at-least one sub-array with given sum
+      if (hashMap.containsKey(sum_so_far - sum)) {
+        List<Integer> list = hashMap.get(sum_so_far - sum);
+        for (Integer value : list) {
+          printSubarray(arr, value + 1, index);
+        }
+      }
+
+      // insert (sum so far, current index) pair into the map
+      insert(hashMap, sum_so_far, index);
+    }
 
   }
 
